@@ -69,7 +69,7 @@ p [].any?                  # returns false
 #  true: 33
 #  false: 34 - 35 - 36 - 37 - 38 - 39 - 40 - 41 - 42 - 43
 #  true: 44
-=end
+
 #  the following key values have special meaning:
 #  nil and :_separator specifies that the elements should be dropped, can be used to ignore some elements
 #  :_alone specifies that the element should be chunked by itself, can be used to force items into thier own chunks
@@ -77,4 +77,22 @@ p [].any?                  # returns false
 
 
 
+#  chunk_while
+#  creates an enumerator for each chunked element, beginnin chunks defined by blocks
+#  this split method each chunk using adjacent elements, elt_before and elt_after in the reciever enum
+#  the result enumerator yields the chunked elements as an array
+#  format:   enum.chunk_while { |elt_before, elt_after| bool }.each { |ary| ..... }
+a = [1,2,4,9,10,11,12,15,16,19,20,21]
+b = a.chunk_while { |i, j| i + 1 == j }
+p b.to_a   # returns [[1, 2], [4], [9, 10, 11, 12], [15, 16], [19, 20, 21]]
+#  this method in Enumerable is not available in Ruby 2.2.4 which is what you are currently running
+=end
 
+
+#  collect
+#  returns a new array with the results of running block once for every element
+#  if no block given, an enumerator is returned
+p (1..5).collect { |i| i * i }  # returns [1, 4, 9, 16, 25]
+p (1..4).collect { "cat" }      # returns ["cat", "cat", "cat", "cat"]
+p (1..6).map { |i| i * i }      # returns [1, 4, 9, 16, 25, 36]
+#  collect and map methods work the same way
