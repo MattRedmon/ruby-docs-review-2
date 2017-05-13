@@ -86,7 +86,7 @@ a = [1,2,4,9,10,11,12,15,16,19,20,21]
 b = a.chunk_while { |i, j| i + 1 == j }
 p b.to_a   # returns [[1, 2], [4], [9, 10, 11, 12], [15, 16], [19, 20, 21]]
 #  this method in Enumerable is not available in Ruby 2.2.4 which is what you are currently running
-=end
+
 
 
 #  collect
@@ -96,3 +96,37 @@ p (1..5).collect { |i| i * i }  # returns [1, 4, 9, 16, 25]
 p (1..4).collect { "cat" }      # returns ["cat", "cat", "cat", "cat"]
 p (1..6).map { |i| i * i }      # returns [1, 4, 9, 16, 25, 36]
 #  collect and map methods work the same way
+
+
+
+#  collect_concat
+#  returns a new array with the concatenated results of running block once for every element in enum
+#  if no block given enumerator is returned
+#  works much like map but it flattens any sub arrays before being returned
+p [1,2,3,4].collect_concat { |e| [e, -e] }        # returns [1, -1, 2, -2, 3, -3, 4, -4]
+p [[1,2],[3,4]].collect_concat { |e| e + [100] }  # returns [1, 2, 100, 3, 4, 100]
+#  flat_map can be used in place of collect_collect
+p [[1,2],[3,4]].flat_map { |e| e + [100] }        # returns [1, 2, 100, 3, 4, 100]
+
+
+
+#  count
+#  returns # of items in enum through enumeration
+#  if arg given the # of items in enum that are equal to arg are given
+#  if block is given counts # of elements yielding true value
+ary = [1,2,4,2,5,2]
+p ary.count                  # returns 6 -- total count in ary
+p ary.count(2)               # returns 3 -- number of 2s in ary
+p ary.count { |x| x%2 == 0 } # returns 4 -- number of even values
+=end
+
+
+
+#  cycle
+#  calls block for each element of enum repeatedly n times or forever if none or nil given
+#  does nothing for non positive # or if collection is empty
+#  returns nil if the loop has finished without getting interrupted
+a = ['a','b','c']
+# a.cycle { |x| puts x }     # prints a,b,c,a,b,c   forever
+a.cycle(2) { |x| puts x }    # prints a,b,c,a,b,c   each on a new line
+
