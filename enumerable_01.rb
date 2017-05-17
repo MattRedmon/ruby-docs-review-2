@@ -118,8 +118,6 @@ ary = [1,2,4,2,5,2]
 p ary.count                  # returns 6 -- total count in ary
 p ary.count(2)               # returns 3 -- number of 2s in ary
 p ary.count { |x| x%2 == 0 } # returns 4 -- number of even values
-=end
-
 
 
 #  cycle
@@ -130,3 +128,84 @@ a = ['a','b','c']
 # a.cycle { |x| puts x }     # prints a,b,c,a,b,c   forever
 a.cycle(2) { |x| puts x }    # prints a,b,c,a,b,c   each on a new line
 
+
+
+#  detect
+#  passes each entry in enum to block
+#  returns the first for which block is not false
+#  if no object matches, calls ifnone and returns its result when it is specified
+#  or returns nil otherwise
+p (1..10).detect { |i| i % 5 == 0 and i % 7 == 0 }     # returns nil
+p (1..10).find { |i| i % 5 == 0 and i % 7 == 0 }       # returns nil
+p (1..100).detect { |i| i % 5 == 0 and i % 7 == 0 }    # returns 35
+p (1..100).find { |i| i % 5 == 0 and i % 7 == 0 }      # returns 35
+
+
+
+#  drop(n) --> array
+#  drops first n element from enum and returns rest elements in an array
+a = [1,2,3,4,5,0]
+a.drop(3)      # returns [4,5,6]
+
+
+
+#  drop_while { |obj| block } --> array
+#  drops elements up to, but not including, the first element for which the block
+#  returns nil or false and returns and array containing the remaining elements
+a = [1,2,3,4,5,0]
+p a.drop_while { |i| i < 3 }     # returns [3,4,5,0]
+p a.drop_while { |i| i <= 3 }    # returns [4,5,0]
+
+
+
+#  each_cons(3){ ..... }
+#  iterate the given block for each array on consecutive <n> elements
+(1..10).each_cons(3) { |a| p a }
+#  returns:
+#  [1, 2, 3]
+#  [2, 3, 4]
+#  [3, 4, 5]
+#  [4, 5, 6]
+#  [5, 6, 7]
+#  [6, 7, 8]
+#  [7, 8, 9]
+#  [8, 9, 10]
+
+
+
+#  each_slice(n) { ..... }
+#  iterates the block for each slice of <n> elements
+(1..10).each_slice(3) { |a| p a }
+#  returns:
+#  [1, 2, 3]
+#  [4, 5, 6]
+#  [7, 8, 9]
+#  [10]
+
+
+
+#  each_with_index
+#  calls block with two args, the item and its index, for each item in enum
+#  given args are passed through to each
+hash = Hash.new
+arr = ['cat', 'dog', 'wombat']
+arr.each_with_index { |item, index|
+  hash[item] = index
+  }
+p hash    # returns {"cat"=>0, "dog"=>1, "wombat"=>2}
+=end
+
+
+#  each_with_object
+#  iterates the given block for each element with an arbitary ojbect given
+#  and returns the initially given object
+evens = (1..10).each_with_object([]) { |i, a| a << i * 2 }
+p evens     # returns [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+
+letters = ['a','b','c','d','e'].each_with_object([]) { |i, a| a << i.upcase }
+p letters   # returns ["A", "B", "C", "D", "E"]
+
+#  the difference between below and above is that a string obj is passed as arg to each_with_object
+#  on the one below while an array obj is passed to the one above
+letters2 = ['a','b','c','d','e'].each_with_object("") { |i, a| a << i.upcase }
+p letters2   # returns "ABCDE"
