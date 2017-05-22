@@ -130,7 +130,7 @@ a.cycle(2) { |x| puts x }    # prints a,b,c,a,b,c   each on a new line
 
 
 
-#  detect
+#  detect  (same as find)
 #  passes each entry in enum to block
 #  returns the first for which block is not false
 #  if no object matches, calls ifnone and returns its result when it is specified
@@ -193,11 +193,11 @@ arr.each_with_index { |item, index|
   hash[item] = index
   }
 p hash    # returns {"cat"=>0, "dog"=>1, "wombat"=>2}
-=end
+
 
 
 #  each_with_object
-#  iterates the given block for each element with an arbitary ojbect given
+#  iterates the given block for each element with an arbitary object given
 #  and returns the initially given object
 evens = (1..10).each_with_object([]) { |i, a| a << i * 2 }
 p evens     # returns [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
@@ -209,3 +209,112 @@ p letters   # returns ["A", "B", "C", "D", "E"]
 #  on the one below while an array obj is passed to the one above
 letters2 = ['a','b','c','d','e'].each_with_object("") { |i, a| a << i.upcase }
 p letters2   # returns "ABCDE"
+
+
+# find (same as detect, see above)
+
+
+
+#  find_all { |obj| block }    (works like select)
+# returns an array of all elements of enum for which the block returns true value
+p (1..10).find_all { |i| i % 3 == 0 }   # returns [3,6,9]
+p (1..10).select { |i| i % 3 == 0 }     # returns [3,6,9]
+p (1..5).find_all { |num| num.even? }   # returns [2,4]
+
+
+
+#  find_index()
+#  find_index { |obj| block }
+#  returns the index for the first for which the evaluated valued is non false
+p (1..50).find_index { |i| i % 5 == 0 and i % 7 == 0 }    # return 34 which is index of number 35
+p (1..100).find_index(50)    # returns 49 which is index of number 50
+
+
+
+#  first
+#  first(n)
+#  returns first element or first n elements
+p (1..10).first      # returns 1
+p (1..10).first(3)   # returns [1, 2, 3]
+p (1..10).first(8)   # returns [1, 2, 3, 4, 5, 6, 7, 8]
+
+
+
+
+#  flat_map { |obj| block }
+#  returns a new array with concatenated results of running block once for every element
+p [1,2,3,4].flat_map { |e| [e,-e] }            # returns [1, -1, 2, -2, 3, -3, 4, -4]
+p [[1,2], [3,4]].flat_map { |e| e + [100] }    # returns [1, 2, 100, 3, 4, 100]
+
+
+
+
+#  grep(pattern)
+#  grep(pattern) { |obj| block }
+#  returns array of every element in enum for which pattern === element
+#  if optional block supplied each match element is passed to it and results store in array
+p (1..100).grep 38..44     # returns [38, 39, 40, 41, 42, 43, 44]
+p (1..100).grep(38..44)    # returns same as above, parens around "38..44" are optional
+colors = %w{ red orange yellow green blue indigo violet }
+p colors.grep(/o/) { |color| color.upcase }    # returns ["ORANGE", "YELLOW", "INDIGO", "VIOLET"]
+#  in this code we select those colors that have an "o" anywhere in them
+#  those that do are passed to the code block where they are upcased
+
+
+#  grep_v(pattern)  available in most current version ruby, not the one you have at moment
+#  grep_v(pattern) { |obj| block }
+#  inverted version of grep, returns array of every element in enum
+#  for whihc not pattern === element
+(1..10).grep_v(2..5)    # returns [1,6,7,8,9,10]
+
+
+#  group_by { |obj| block }
+#  groups the collection by result of the block,  returns has where the keys are the
+#  evaluated result rom the block and the values are arrays of elements in the
+#  collection that correspond to the key
+p (1..6).group_by { |i| i % 3 }    # returns  {1=>[1, 4], 2=>[2, 5], 0=>[3, 6]}
+#  the hash returns in an array those nums that are divisible by 3 with 1 left over --> 1=>[1,4]
+#  2=>[2,5] --> those nums from given obj that are divisible by 3 with 2 left over
+#  0=>[1,3] --> those nums that are divisible by 3 with 0 left over
+p (1..16).group_by { |i| i % 2 }  # returns {1=>[1, 3, 5, 7, 9, 11, 13, 15], 0=>[2, 4, 6, 8, 10, 12, 14, 16]}
+
+
+
+#  include?(obj)
+#  returns true if any member of enum equals obj, tested using == (double equal)
+p (1..10).include?(11)    # returns false
+p ["one", "two", "three", "matt", "five"].include?("matt")     # returns true
+
+
+
+#  inject(initial, sym)
+#  inject(sym)
+#  inject(initial) { |memo, obj| block }
+#  inject { |memo, obj| block }
+#  inject and reduce methods are aliases
+#  no benefit of one over the other
+#  combines all elements of enum by applying a binary operation, specified by a block
+#  or a symbol that names a method or operator
+
+# sums some numbers
+p (5..10).inject(:+)   # returns 45 --> the sum of nums 5 to 10
+
+# same using block and reduce
+p (5..10).reduce { |sum, n| sum + n }     # returns 45
+
+# multiply some numbers
+p (5..10).inject(1, :*)   # returns 151200 --> the product of multiply 5*6*7*8*9*10
+
+# same using a block
+p (5..10).inject(1) { |product, n| product * n }  # returns 151200
+
+# finds the longest word
+longest = %w{ cat sheep dog bear aardvark }.inject do |memo,word|
+  memo.length > word.length ? memo : word
+end
+p longest   # returns "aardvark"
+=end
+
+
+
+
